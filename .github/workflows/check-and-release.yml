@@ -1,0 +1,111 @@
+name: Check and Release
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*'
+  pull_request:
+
+env:
+  REGISTRY: ghcr.io
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-homepage:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: lernUP/learnup-homepage
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: './frontend/.nvmrc'
+
+      - name: Install yarn dependencies
+        run: yarn install
+
+      - name: Lint check frontend
+        run: yarn lint:check
+
+      - name: Format check frontend
+        run: yarn format:check
+
+      - name: Build frontend
+        run: yarn build
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: ./frontend
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_HOMEPAGE }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          labels: |
+            org.opencontainers.image.title=${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,
+            type=ref,event=tag
+
+      - name: Docker Login
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: frontend
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    needs:
+      - build-homepage
+    steps:
+      - name: Generate tag
+        id: tag
+        run: echo "TAG=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Create version file
+        uses: finnp/create-file-action@master
+        env:
+          FILE_NAME: 'homepage_version'
+          FILE_DATA: 'LEARNUP_HOMEPAGE_TAG=${{ steps.tag.outputs.TAG }}'
+
+      - name: Push version file
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.LEARNUP_HOMEPAGE_VERSION_BUMP }}
+        with:
+          source_file: 'version'
+          destination_repo: 'lernUP/learnUP-Deployment'
+          destination_branch: master
+          user_email: 'nilsrothe05@icloud.com'
+          user_name: 'deepspace1000'
+          commit_message: 'Update docker image version to the latest tag: ${{ steps.tag.outputs.TAG }}'
+

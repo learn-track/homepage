@@ -102,7 +102,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.LEARNUP_HOMEPAGE_VERSION_BUMP }}
         with:
-          source_file: 'version'
+          source_file: 'homepage_version'
           destination_repo: 'lernUP/learnUP-Deployment'
           destination_branch: master
           user_email: 'nilsrothe05@icloud.com'

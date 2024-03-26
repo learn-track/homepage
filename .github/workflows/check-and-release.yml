@@ -19,7 +19,7 @@ jobs:
   build-homepage:
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: lernUP/learnup-homepage
+      IMAGE_NAME: learn-track/learntrack-homepage
     defaults:
       run:
         working-directory: ./frontend
@@ -95,17 +95,17 @@ jobs:
         uses: finnp/create-file-action@master
         env:
           FILE_NAME: 'homepage_version'
-          FILE_DATA: 'LEARNUP_HOMEPAGE_TAG=${{ steps.tag.outputs.TAG }}'
+          FILE_DATA: 'LEARNTRACK_HOMEPAGE_TAG=${{ steps.tag.outputs.TAG }}'
 
       - name: Push version file
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
-          API_TOKEN_GITHUB: ${{ secrets.LEARNUP_HOMEPAGE_VERSION_BUMP }}
+          API_TOKEN_GITHUB: ${{ secrets.LEARNTRACK_HOMEPAGE_VERSION_BUMP }}
         with:
           source_file: 'homepage_version'
-          destination_repo: 'lernUP/learnUP-Deployment'
+          destination_repo: 'learn-track/learnTrack-Deployment'
           destination_branch: master
           user_email: 'nilsrothe05@icloud.com'
           user_name: 'deepspace1000'
-          commit_message: 'Update docker image version to the latest tag: ${{ steps.tag.outputs.TAG }}'
+          commit_message: 'Update homepage docker image version to the latest tag: ${{ steps.tag.outputs.TAG }}'
 

@@ -21,7 +21,7 @@ echo '
                                                  888                "Y88P"
 '
 
-echo "Hi there! This script will set up your development environment for the learnUP homepage."
+echo "Hi there! This script will set up your development environment for the learnTrack homepage."
 read -p "ℹ️ Press Enter to continue..."
 echo
 

@@ -5,9 +5,10 @@ This is the homepage for learnTrack on which potential users can inform themselv
 ## Deployment
 
 
-| Branch | Domain                              | Server        | Repo                                                 |
-|--------|-------------------------------------|---------------|------------------------------------------------------|
-| Master | http://homepage.learnup.brunner.top | 46.232.178.95 | https://github.com/learn-track/learnTrack-Deployment |
+| Branch | Domain                                 | Server        | Repo                                                              |
+|--------|----------------------------------------|---------------|-------------------------------------------------------------------|
+| Master | https://homepage-testing.learntrack.ch | 46.232.178.95 | https://github.com/learn-track/learnTrack-Deployment/tree/master  |
+| Master | https://homepage-staging.learntrack.ch | 5.45.111.246  | https://github.com/learn-track/learnTrack-Deployment/tree/staging |
 
 ## Development
 

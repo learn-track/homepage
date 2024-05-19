@@ -1,0 +1,11 @@
+#!/bin/bash
+
+declare IS_FRONTEND_FOLDER_CHANGE=$(git diff --staged --compact-summary | grep 'frontend/')
+echo "IS_FRONTEND_FOLDER_CHANGE --> $IS_FRONTEND_FOLDER_CHANGE"
+
+if [[ $IS_FRONTEND_FOLDER_CHANGE ]]; then
+pushd frontend
+yarn format:check
+yarn lint:check
+popd
+fi

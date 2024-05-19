@@ -25,6 +25,10 @@ echo "Hi there! This script will set up your development environment for the lea
 read -p "ℹ️ Press Enter to continue..."
 echo
 
+echo "️️⚙️ Configuring git hooks path (tools/git-hooks)"
+git config core.hooksPath tools/git-hooks
+echo
+
 pushd ./frontend > /dev/null || exit
 
 echo "⚙️ Installing Node.js"

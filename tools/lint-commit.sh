@@ -1,6 +1,6 @@
 #!/bin/bash
 
-jira="HOME"
+jira="(HOME|LERN)"
 scope_regex="(deps|deps-dev|${jira}-[0-9]+)"
 types="build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"
 message_regex="^(${types})\(${scope_regex}\): [a-zA-Z]"
